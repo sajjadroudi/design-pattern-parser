@@ -56,4 +56,8 @@ public class ClassParser {
         return clazz.isAbstract();
     }
 
+    public boolean isClassStatic() {
+        return clazz.isStatic();
+    }
+
 }
