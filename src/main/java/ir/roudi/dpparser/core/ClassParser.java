@@ -72,4 +72,8 @@ public class ClassParser {
         return clazz.getExtendedTypes().toString();
     }
 
+    public String extractImplementedClasses() {
+        return clazz.getImplementedTypes().toString();
+    }
+
 }
