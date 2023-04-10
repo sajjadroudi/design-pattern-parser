@@ -68,4 +68,8 @@ public class ClassParser {
         return clazz.isInterface();
     }
 
+    public String extractExtendedClasses() {
+        return clazz.getExtendedTypes().toString();
+    }
+
 }

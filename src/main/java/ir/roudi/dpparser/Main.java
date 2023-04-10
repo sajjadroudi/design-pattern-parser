@@ -13,7 +13,7 @@ public class Main {
 
         for(var clazz : classes) {
             var parser = new ClassParser(clazz);
-            System.out.println(parser.extractClassName());
+            System.out.println(parser.extractClassName() + " -> " + parser.extractExtendedClasses());
         }
     }
 
