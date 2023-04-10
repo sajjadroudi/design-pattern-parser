@@ -52,4 +52,8 @@ public class ClassParser {
         return CLASS_VISIBILITY_PACKAGE_ACCESS;
     }
 
+    public boolean isClassAbstract() {
+        return clazz.isAbstract();
+    }
+
 }
