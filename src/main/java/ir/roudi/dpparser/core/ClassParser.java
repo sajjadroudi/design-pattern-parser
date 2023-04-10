@@ -60,4 +60,8 @@ public class ClassParser {
         return clazz.isStatic();
     }
 
+    public boolean isClassFinal() {
+        return clazz.isFinal();
+    }
+
 }
