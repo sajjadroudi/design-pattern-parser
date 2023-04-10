@@ -11,8 +11,9 @@ public class ClassParser {
     public static final int CLASS_VISIBILITY_PUBLIC = 1;
     public static final int CLASS_VISIBILITY_PROTECTED = 2;
     public static final int CLASS_VISIBILITY_PRIVATE = 3;
+    public static final int CLASS_VISIBILITY_PACKAGE_ACCESS = 4;
 
-    private ClassOrInterfaceDeclaration clazz;
+    private final ClassOrInterfaceDeclaration clazz;
 
     public ClassParser(ClassOrInterfaceDeclaration clazz) {
         this.clazz = clazz;
@@ -26,6 +27,19 @@ public class ClassParser {
             return CLASS_TYPE_NESTED;
 
         return CLASS_TYPE_ORDINARY;
+    }
+
+    public int extractClassVisibility() {
+        if(clazz.isPublic())
+            return CLASS_VISIBILITY_PUBLIC;
+
+        if(clazz.isProtected())
+            return CLASS_VISIBILITY_PROTECTED;
+
+        if(clazz.isPrivate())
+            return CLASS_VISIBILITY_PRIVATE;
+
+        return CLASS_VISIBILITY_PACKAGE_ACCESS;
     }
 
 }
