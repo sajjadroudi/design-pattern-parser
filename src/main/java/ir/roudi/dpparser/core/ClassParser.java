@@ -1,4 +1,4 @@
-package ir.roudi.dpparser;
+package ir.roudi.dpparser.core;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
