@@ -19,6 +19,16 @@ public class ClassParser {
         this.clazz = clazz;
     }
 
+    public String extractPackageName() {
+        var canonicalName = clazz.getFullyQualifiedName().orElse("");
+        var packageName = canonicalName.replace("." + extractClassName(), "");
+        return packageName;
+    }
+
+    public String extractClassName() {
+        return clazz.getNameAsString();
+    }
+
     public int extractClassType() {
         if(clazz.isInterface())
             return CLASS_TYPE_INTERFACE;
