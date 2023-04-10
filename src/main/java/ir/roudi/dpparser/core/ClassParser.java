@@ -64,4 +64,8 @@ public class ClassParser {
         return clazz.isFinal();
     }
 
+    public boolean isClassInterface() {
+        return clazz.isInterface();
+    }
+
 }
