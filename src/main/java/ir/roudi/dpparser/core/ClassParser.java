@@ -1,7 +1,7 @@
 package ir.roudi.dpparser.core;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import java.util.ArrayList;
@@ -86,8 +86,12 @@ public class ClassParser {
     public String extractChildren(List<ClassOrInterfaceDeclaration> allClasses) {
         List<ClassOrInterfaceDeclaration> children = new ArrayList<>();
         allClasses.forEach(possibleChild -> {
-            var isChild = possibleChild.getExtendedTypes()
-                    .stream()
+
+            var parents = new ArrayList<ClassOrInterfaceType>();
+            parents.addAll(possibleChild.getExtendedTypes());
+            parents.addAll(possibleChild.getImplementedTypes());
+
+            var isChild = parents.stream()
                     .anyMatch(it -> it.getNameAsString().equals(clazz.getNameAsString()));
 
             if(isChild)

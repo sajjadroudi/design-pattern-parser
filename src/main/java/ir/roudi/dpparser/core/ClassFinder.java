@@ -30,11 +30,18 @@ public class ClassFinder {
                 })
                 .map(pair -> {
                     var className = extractClassName(pair.getFirst());
-                    return pair.getSecond()
+
+                    var compilationUnit = pair.getSecond()
                             .getResult()
-                            .get()
-                            .getClassByName(className)
+                            .get();
+
+                    var interfaceDeclaration = compilationUnit
+                            .getInterfaceByName(className)
                             .orElse(null);
+
+                    return compilationUnit
+                            .getClassByName(className)
+                            .orElse(interfaceDeclaration);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
