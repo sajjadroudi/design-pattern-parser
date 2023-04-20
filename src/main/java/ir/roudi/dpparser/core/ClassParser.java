@@ -1,12 +1,11 @@
 package ir.roudi.dpparser.core;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassParser {
@@ -22,8 +21,11 @@ public class ClassParser {
 
     private final ClassOrInterfaceDeclaration clazz;
 
-    public ClassParser(ClassOrInterfaceDeclaration clazz) {
+    private final ClassContainer classContainer;
+
+    public ClassParser(ClassOrInterfaceDeclaration clazz, ClassContainer classContainer) {
         this.clazz = clazz;
+        this.classContainer = classContainer;
     }
 
     public String extractPackageName() {
@@ -83,9 +85,9 @@ public class ClassParser {
         return clazz.getImplementedTypes().toString();
     }
 
-    public String extractChildren(List<ClassOrInterfaceDeclaration> allClasses) {
+    public String extractChildren() {
         List<ClassOrInterfaceDeclaration> children = new ArrayList<>();
-        allClasses.forEach(possibleChild -> {
+        classContainer.getAllClasses().forEach(possibleChild -> {
 
             var parents = new ArrayList<ClassOrInterfaceType>();
             parents.addAll(possibleChild.getExtendedTypes());
@@ -104,6 +106,10 @@ public class ClassParser {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList())
                 .toString();
+    }
+
+    public List<String> findOverriddenMethods() {
+        return new OverriddenMethodsFinder(classContainer, clazz).findOverriddenMethods();
     }
 
 }

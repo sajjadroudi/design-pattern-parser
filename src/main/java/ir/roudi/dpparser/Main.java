@@ -1,5 +1,6 @@
 package ir.roudi.dpparser;
 
+import ir.roudi.dpparser.core.ClassContainer;
 import ir.roudi.dpparser.core.ClassFinder;
 import ir.roudi.dpparser.core.ClassParser;
 
@@ -11,10 +12,11 @@ public class Main {
         var finder = new ClassFinder();
         var projectPath = "C:\\Users\\roudi\\Desktop\\1 - QuickUML 2001";
         var classes = finder.findAllClasses(projectPath);
+        var classContainer = new ClassContainer(classes);
 
-        for(var clazz : classes) {
-            var parser = new ClassParser(clazz);
-            System.out.println(clazz.getNameAsString() + " -> " + parser.extractChildren(classes));
+        for(var clazz : classContainer.getAllClasses()) {
+            var parser = new ClassParser(clazz, classContainer);
+            System.out.println(clazz.getNameAsString() + " -> " + parser.findOverriddenMethods());
         }
     }
 
