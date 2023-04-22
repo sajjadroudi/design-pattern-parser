@@ -61,17 +61,6 @@ public class ClassParser {
         return CLASS_VISIBILITY_PACKAGE_ACCESS;
     }
 
-    public boolean isClassAbstract() {
-        return clazz.isAbstract();
-    }
-
-    public boolean isClassStatic() {
-        return clazz.isStatic();
-    }
-
-    public boolean isClassFinal() {
-        return clazz.isFinal();
-    }
 
     public boolean isClassInterface() {
         return clazz.isInterface();
@@ -112,4 +101,57 @@ public class ClassParser {
         return new OverriddenMethodsFinder(classContainer, clazz).findOverriddenMethods();
     }
 
+    public String extractDelegatedClasses() {
+        List<ClassOrInterfaceDeclaration> delegatedClasses = new ArrayList<>();
+        classContainer.getAllClasses().forEach(possibleDelegated -> {
+            var fields = possibleDelegated.getFields();
+            for (var field : fields) {
+                if (field.getElementType().isClassOrInterfaceType()) {
+                    var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
+                    if (classOrInterfaceType.getNameAsString().equals(clazz.getNameAsString())) {
+                        delegatedClasses.add(possibleDelegated);
+                        break;
+                    }
+                }
+            }
+        });
+
+        return delegatedClasses.stream()
+                .map(ClassOrInterfaceDeclaration::getFullyQualifiedName)
+                .map(it -> it.orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+                .toString();
+    }
+    public List<String> extractStaticMethods() {
+        List<String> staticMethods = new ArrayList<>();
+        for (MethodDeclaration method : clazz.getMethods()) {
+            if (method.isStatic()) {
+                staticMethods.add(method.getNameAsString());
+            }
+        }
+        return staticMethods;
+    }
+    public List<String> findFinalMethods() {
+        return clazz.getMethods().stream()
+                .filter(MethodDeclaration::isFinal)
+                .map(NodeWithSimpleName::getNameAsString)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> extractAbstractMethods() {
+        return clazz.getMethods().stream()
+                .filter(MethodDeclaration::isAbstract)
+                .map(NodeWithSimpleName::getNameAsString)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> extractConstructors() {
+        return clazz.getConstructors().stream()
+                .map(NodeWithSimpleName::getNameAsString)
+                .collect(Collectors.toList());
+    }
+
+
 }
+
