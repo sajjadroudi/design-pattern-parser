@@ -5,7 +5,6 @@ import ir.roudi.dpparser.core.ClassFinder;
 import ir.roudi.dpparser.core.ClassParser;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,10 +15,8 @@ public class Main {
 
         for(var clazz : classContainer.getAllClasses()) {
             var parser = new ClassParser(clazz, classContainer);
-            System.out.println(clazz.getNameAsString() + " -> " + parser.extractConstructors());
+            System.out.println(clazz.getNameAsString() + " -> " + parser.extractFields());
         }
     }
-
-
 
 }

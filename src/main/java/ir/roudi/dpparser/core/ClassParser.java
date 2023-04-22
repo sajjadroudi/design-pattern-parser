@@ -4,6 +4,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.type.Type;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -152,6 +154,27 @@ public class ClassParser {
                 .collect(Collectors.toList());
     }
 
+    public List<String> extractMethodsDetails() {
+        List<String> methodsDetails = new ArrayList<>();
+        for (MethodDeclaration method : clazz.getMethods()) {
+            String methodName = method.getNameAsString();
+            String returnType = method.getTypeAsString();
+            List<String> parameters = method.getParameters().stream()
+                    .map(parameter -> parameter.getTypeAsString() + " " + parameter.getNameAsString())
+                    .collect(Collectors.toList());
+            String methodDetails = methodName + "(" + String.join(", ", parameters) + ") : " + returnType;
+            methodsDetails.add(methodDetails);
+        }
+        return methodsDetails;
+    }
+
+    public List<String> extractFields() {
+        List<String> fields = new ArrayList<>();
+        for (var field : clazz.getFields()) {
+            fields.add(field.getElementType().asString() + " " + field.getVariable(0).getNameAsString());
+        }
+        return fields;
+    }
 
 }
 
