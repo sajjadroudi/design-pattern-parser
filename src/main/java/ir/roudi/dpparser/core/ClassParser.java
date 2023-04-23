@@ -199,7 +199,7 @@ public class ClassParser {
     public List<String> extractInstantiatedClasses() {
         var cu = clazz.findCompilationUnit();
 
-        if(cu.isEmpty())
+        if(!cu.isPresent())
             return List.of();
 
         var classes = new HashSet<String>();

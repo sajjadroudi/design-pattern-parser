@@ -114,7 +114,7 @@ public class ExcelWriter {
                 "aggregation",
                 "delegation",
                 "composition",
-                "instantiation",
+                parser.extractInstantiatedClasses(),
                 "API",
                 "pattern",
                 "role",
