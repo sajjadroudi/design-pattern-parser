@@ -148,12 +148,6 @@ public class ClassParser {
                 .collect(Collectors.toList());
     }
 
-    public List<String> extractConstructors() {
-        return clazz.getConstructors().stream()
-                .map(NodeWithSimpleName::getNameAsString)
-                .collect(Collectors.toList());
-    }
-
     public List<String> extractMethodsDetails() {
         List<String> methodsDetails = new ArrayList<>();
         for (MethodDeclaration method : clazz.getMethods()) {
@@ -175,6 +169,20 @@ public class ClassParser {
         }
         return fields;
     }
+
+    public List<String> extractConstructors() {
+        return clazz.getConstructors().stream()
+                .map(constructor -> {
+                    String modifiers = constructor.getModifiers().toString();
+                    String name = constructor.getNameAsString();
+                    List<String> parameters = constructor.getParameters().stream()
+                            .map(parameter -> parameter.getType().asString())
+                            .collect(Collectors.toList());
+                    return String.format("%s %s(%s)", modifiers, name, String.join(", ", parameters));
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }
 

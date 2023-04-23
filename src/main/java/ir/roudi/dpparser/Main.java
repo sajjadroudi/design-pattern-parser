@@ -15,7 +15,7 @@ public class Main {
 
         for(var clazz : classContainer.getAllClasses()) {
             var parser = new ClassParser(clazz, classContainer);
-            System.out.println(clazz.getNameAsString() + " -> " + parser.extractFields());
+            System.out.println(clazz.getNameAsString() + " -> " + parser.extractConstructors());
         }
     }
 
