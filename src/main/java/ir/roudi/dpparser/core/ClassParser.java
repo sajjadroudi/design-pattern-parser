@@ -4,10 +4,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.type.Type;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ClassParser {
@@ -195,30 +196,16 @@ public class ClassParser {
                 .collect(Collectors.toList());
     }
 
-    public List<String> Instantiation() {
-        List<String> relatedClasses = new ArrayList<>();
-        List<ClassOrInterfaceDeclaration> delegatedClasses = classContainer.getAllClasses().stream()
-                .filter(c -> !c.getNameAsString().equals(clazz.getNameAsString()))
-                .collect(Collectors.toList());
+    public List<String> extractInstantiatedClasses() {
+        var cu = clazz.findCompilationUnit();
 
-        for (ClassOrInterfaceDeclaration delegatedClass : delegatedClasses) {
-            for (var field : delegatedClass.getFields()) {
-                if (field.getElementType().isClassOrInterfaceType()) {
-                    var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
-                    if (classOrInterfaceType.getNameAsString().equals(clazz.getNameAsString())) {
-                        relatedClasses.add(delegatedClass.getFullyQualifiedName().orElse(null));
-                        break;
-                    }
-                }
-            }
-        }
+        if(cu.isEmpty())
+            return List.of();
 
-        return relatedClasses.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
+        var classes = new HashSet<String>();
+        var visitor = new InstantiatedClassesVisitor();
+        visitor.visit(cu.get(), classes);
+        return new ArrayList<>(classes);
     }
-
-
 
 }
