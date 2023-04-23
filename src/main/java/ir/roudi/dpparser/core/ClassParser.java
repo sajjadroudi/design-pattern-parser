@@ -195,4 +195,30 @@ public class ClassParser {
                 .collect(Collectors.toList());
     }
 
+    public List<String> Instantiation() {
+        List<String> relatedClasses = new ArrayList<>();
+        List<ClassOrInterfaceDeclaration> delegatedClasses = classContainer.getAllClasses().stream()
+                .filter(c -> !c.getNameAsString().equals(clazz.getNameAsString()))
+                .collect(Collectors.toList());
+
+        for (ClassOrInterfaceDeclaration delegatedClass : delegatedClasses) {
+            for (var field : delegatedClass.getFields()) {
+                if (field.getElementType().isClassOrInterfaceType()) {
+                    var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
+                    if (classOrInterfaceType.getNameAsString().equals(clazz.getNameAsString())) {
+                        relatedClasses.add(delegatedClass.getFullyQualifiedName().orElse(null));
+                        break;
+                    }
+                }
+            }
+        }
+
+        return relatedClasses.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+
+
 }
