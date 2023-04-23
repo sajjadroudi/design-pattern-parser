@@ -1,7 +1,6 @@
 package ir.roudi.dpparser.core;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.resolution.TypeSolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 public class ClassContainer {
 
     private final List<ClassOrInterfaceDeclaration> classes;
-
 
     public ClassContainer(List<ClassOrInterfaceDeclaration> classes) {
         this.classes = classes;
