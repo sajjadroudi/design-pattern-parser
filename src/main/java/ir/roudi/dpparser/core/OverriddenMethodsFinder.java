@@ -63,7 +63,7 @@ public class OverriddenMethodsFinder {
         List<String> parents = new ArrayList<>();
         String current = clazz.getNameAsString();
 
-        findAllParents(current, parents);
+        findAllParents(current, current, parents);
 
         return parents.stream()
                 .map(classContainer::getClassFromItsName)
@@ -71,7 +71,7 @@ public class OverriddenMethodsFinder {
                 .collect(Collectors.toList());
     }
 
-    private void findAllParents(String current, List<String> allParents) {
+    private void findAllParents(String startingClass, String current, List<String> allParents) {
         if(current == null)
             return;
 
@@ -80,7 +80,8 @@ public class OverriddenMethodsFinder {
         allParents.addAll(parents);
 
         for(String parentClassName : parents) {
-            findAllParents(parentClassName, allParents);
+            if(!startingClass.equals(parentClassName))
+                findAllParents(startingClass, parentClassName, allParents);
         }
     }
     public List<String> getDirectParents(String className) {
