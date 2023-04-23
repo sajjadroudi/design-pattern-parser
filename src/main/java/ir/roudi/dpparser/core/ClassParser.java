@@ -5,10 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassParser {
@@ -116,28 +113,7 @@ public class ClassParser {
         return new OverriddenMethodsFinder(classContainer, clazz).findOverriddenMethods();
     }
 
-    public String extractDelegatedClasses() {
-        List<ClassOrInterfaceDeclaration> delegatedClasses = new ArrayList<>();
-        classContainer.getAllClasses().forEach(possibleDelegated -> {
-            var fields = possibleDelegated.getFields();
-            for (var field : fields) {
-                if (field.getElementType().isClassOrInterfaceType()) {
-                    var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
-                    if (classOrInterfaceType.getNameAsString().equals(clazz.getNameAsString())) {
-                        delegatedClasses.add(possibleDelegated);
-                        break;
-                    }
-                }
-            }
-        });
 
-        return delegatedClasses.stream()
-                .map(ClassOrInterfaceDeclaration::getFullyQualifiedName)
-                .map(it -> it.orElse(null))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList())
-                .toString();
-    }
     public List<String> extractStaticMethods() {
         List<String> staticMethods = new ArrayList<>();
         for (MethodDeclaration method : clazz.getMethods()) {
@@ -222,4 +198,24 @@ public class ClassParser {
         return associatedClasses;
     }
 
+    public List<Optional<String>> getDelegatedClasses() {
+        List<ClassOrInterfaceDeclaration> delegatedClasses = new ArrayList<>();
+        classContainer.getAllClasses().forEach(possibleDelegated -> {
+            var fields = possibleDelegated.getFields();
+            for (var field : fields) {
+                if (field.getElementType().isClassOrInterfaceType()) {
+                    var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
+                    if (classOrInterfaceType.getName().equals(clazz.getName())) {
+                        delegatedClasses.add(possibleDelegated);
+                        break;
+                    }
+                }
+            }
+        });
+
+        return delegatedClasses.stream()
+                .map(ClassOrInterfaceDeclaration::getFullyQualifiedName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableList());
+    }
 }

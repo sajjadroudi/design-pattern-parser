@@ -18,7 +18,7 @@ public class Main {
 
         for(var clazz : classContainer.getAllClasses()) {
             var parser = new ClassParser(clazz, classContainer);
-            System.out.println(clazz.getNameAsString() + " -> " + parser.findAssociatedClasses());
+            System.out.println(clazz.getNameAsString() + " -> " + parser.getDelegatedClasses());
         }
     }
 
