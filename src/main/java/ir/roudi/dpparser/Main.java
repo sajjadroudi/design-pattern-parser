@@ -9,14 +9,17 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         var finder = new ClassFinder();
-        var projectPath = "C:\\Users\\Aftab Shargh\\Desktop\\1 - QuickUML 2001";
+        var projectPath = "C:\\Users\\roudi\\Desktop\\1 - QuickUML 2001";
         var classes = finder.findAllClasses(projectPath);
         var classContainer = new ClassContainer(classes);
 
-        for(var clazz : classContainer.getAllClasses()) {
+        ExcelWriter excelWriter = new ExcelWriter(classContainer, "output.xlsx");
+        excelWriter.createOutput();
+
+        /*for(var clazz : classContainer.getAllClasses()) {
             var parser = new ClassParser(clazz, classContainer);
-            System.out.println(clazz.getNameAsString() + " -> " + parser.extractConstructors());
-        }
+            System.out.println(clazz.getNameAsString() + " -> " + parser.extractDelegatedClasses());
+        }*/
     }
 
 }

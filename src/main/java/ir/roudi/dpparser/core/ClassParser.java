@@ -63,6 +63,18 @@ public class ClassParser {
         return CLASS_VISIBILITY_PACKAGE_ACCESS;
     }
 
+    public boolean isAbstract() {
+        return clazz.isAbstract();
+    }
+
+    public boolean isStatic() {
+        return clazz.isStatic();
+    }
+
+    public boolean isFinal() {
+        return clazz.isFinal();
+    }
+
 
     public boolean isClassInterface() {
         return clazz.isInterface();
@@ -183,6 +195,4 @@ public class ClassParser {
                 .collect(Collectors.toList());
     }
 
-
 }
-
