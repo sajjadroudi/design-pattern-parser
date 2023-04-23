@@ -1,10 +1,18 @@
 package ir.roudi.dpparser.core;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,23 +47,23 @@ public class ClassParser {
     }
 
     public int extractClassType() {
-        if(clazz.isInterface())
+        if (clazz.isInterface())
             return CLASS_TYPE_INTERFACE;
 
-        if(clazz.isInnerClass())
+        if (clazz.isInnerClass())
             return CLASS_TYPE_NESTED;
 
         return CLASS_TYPE_ORDINARY;
     }
 
     public int extractClassVisibility() {
-        if(clazz.isPublic())
+        if (clazz.isPublic())
             return CLASS_VISIBILITY_PUBLIC;
 
-        if(clazz.isProtected())
+        if (clazz.isProtected())
             return CLASS_VISIBILITY_PROTECTED;
 
-        if(clazz.isPrivate())
+        if (clazz.isPrivate())
             return CLASS_VISIBILITY_PRIVATE;
 
         return CLASS_VISIBILITY_PACKAGE_ACCESS;
@@ -97,7 +105,7 @@ public class ClassParser {
             var isChild = parents.stream()
                     .anyMatch(it -> it.getNameAsString().equals(clazz.getNameAsString()));
 
-            if(isChild)
+            if (isChild)
                 children.add(possibleChild);
         });
 
@@ -123,6 +131,7 @@ public class ClassParser {
         }
         return staticMethods;
     }
+
     public List<String> findFinalMethods() {
         return clazz.getMethods().stream()
                 .filter(MethodDeclaration::isFinal)
@@ -175,7 +184,7 @@ public class ClassParser {
     public List<String> extractInstantiatedClasses() {
         var cu = clazz.findCompilationUnit();
 
-        if(!cu.isPresent())
+        if (!cu.isPresent())
             return List.of();
 
         var classes = new HashSet<String>();
@@ -198,27 +207,33 @@ public class ClassParser {
         return associatedClasses;
     }
 
-    public List<Optional<String>> getDelegatedClasses() {
-        List<ClassOrInterfaceDeclaration> delegatedClasses = new ArrayList<>();
-        classContainer.getAllClasses().forEach(possibleDelegated -> {
-            var fields = possibleDelegated.getFields();
-            for (var field : fields) {
-                if (field.getElementType().isClassOrInterfaceType()) {
-                    var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
-                    if (classOrInterfaceType.getName().equals(clazz.getName())) {
-                        delegatedClasses.add(possibleDelegated);
-                        break;
+    public List<String> getDelegatedClasses() {
+        var result = new HashMap<String, Set<String>>();
+
+        for (MethodDeclaration method : clazz.getMethods()) {
+            for (MethodCallExpr methodCall : method.findAll(MethodCallExpr.class)) {
+                if (methodCall.getScope().isPresent() && methodCall.getScope().get() instanceof NameExpr) {
+                    String fieldName = ((NameExpr) methodCall.getScope().get()).getNameAsString();
+                    String methodName = methodCall.getNameAsString();
+                    var field = clazz.getFieldByName(fieldName);
+                    if (field.isPresent() && field.get().getElementType().isClassOrInterfaceType()) {
+                        var className = field.get().getElementType().asClassOrInterfaceType().getNameAsString();
+                        var value = result.getOrDefault(className, new HashSet<>());
+                        value.add(String.format("%s.%s()", fieldName, methodName));
+                        result.put(className, value);
                     }
                 }
             }
+        }
+
+        var list = new ArrayList<String>();
+        result.forEach((key, value) -> {
+            var item = String.format("%s [%s]", key, String.join(", ", value));
+            list.add(item);
         });
 
-        return delegatedClasses.stream()
-                .map(ClassOrInterfaceDeclaration::getFullyQualifiedName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableList());
+        return list;
     }
-
 
 
 

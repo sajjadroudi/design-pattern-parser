@@ -1,6 +1,7 @@
 package ir.roudi.dpparser.core;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.resolution.TypeSolver;
 
 import java.util.ArrayList;
 import java.util.List;
