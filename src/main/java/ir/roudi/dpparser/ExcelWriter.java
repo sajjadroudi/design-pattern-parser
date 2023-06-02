@@ -71,7 +71,7 @@ public class ExcelWriter {
         var allClasses = classContainer.getAllClasses();
         for(int index = 1; index < allClasses.size(); index++) {
             var row = sheet.createRow(index);
-            var parser = new ClassParser(allClasses.get(index), classContainer);
+            var parser = new ClassParser(allClasses.get(index - 1), classContainer);
             writeClassInformation(row, parser);
         }
     }
