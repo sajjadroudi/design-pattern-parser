@@ -27,6 +27,15 @@ public class GraphHandler {
                     .forEach(target -> {
                         graph.considerEdge(clazz, target, Relationship.ASSOCIATION);
                     });
+
+            parser.findDelegatedClasses()
+                    .keySet()
+                    .stream()
+                    .map(classContainer::getClassFromItsName)
+                    .filter(Objects::nonNull)
+                    .forEach(target -> {
+                        graph.considerEdge(clazz, target, Relationship.DELEGATION);
+                    });
         }
 
         visualizer = new GraphVisualizer(graph.getData());

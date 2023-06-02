@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -112,7 +113,7 @@ public class ExcelWriter {
                 parser.extractAbstractMethods(),
                 parser.findAssociatedClasses(),
                 parser.findAssociatedClasses(),
-                parser.getDelegatedClasses(),
+                getDelegationClasses(parser),
                 parser.findAssociatedClasses(),
                 parser.extractInstantiatedClasses(),
                 "API",
@@ -126,6 +127,15 @@ public class ExcelWriter {
         for(int index = 0; index < information.size(); index++) {
             row.createCell(index).setCellValue(information.get(index));
         }
+    }
+
+    private List<String> getDelegationClasses(ClassParser parser) {
+        var delegatedClasses = new ArrayList<String>();
+        parser.findDelegatedClasses().forEach((key, value) -> {
+            var item = String.format("%s [%s]", key, String.join(", ", value));
+            delegatedClasses.add(item);
+        });
+        return delegatedClasses;
     }
 
 }

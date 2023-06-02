@@ -201,7 +201,7 @@ public class ClassParser {
         return associatedClasses;
     }
 
-    public List<String> getDelegatedClasses() {
+    public Map<String, Set<String>> findDelegatedClasses() {
         var result = new HashMap<String, Set<String>>();
 
         for (MethodDeclaration method : clazz.getMethods()) {
@@ -220,13 +220,7 @@ public class ClassParser {
             }
         }
 
-        var list = new ArrayList<String>();
-        result.forEach((key, value) -> {
-            var item = String.format("%s [%s]", key, String.join(", ", value));
-            list.add(item);
-        });
-
-        return list;
+        return result;
     }
 
 }
