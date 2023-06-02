@@ -12,6 +12,7 @@ repositories {
 dependencies {
     implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.25.2'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
+    implementation 'com.github.vlsi.mxgraph:jgraphx:4.2.2'
 }
 
 test {
