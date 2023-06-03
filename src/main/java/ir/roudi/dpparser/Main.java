@@ -12,20 +12,21 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        var parser = new JavaProjectParser("C:\\ood\\Microservice Open Source Project\\spring-cloud-netflix-main");
-        parser.saveToExcel("test.xlsx");
-//        doOnEachProject((projectName, projectParser) -> {
-//            projectParser.saveToExcel("outputs/" + projectName + ".xlsx");
-//        });
+        doOnEachProject((projectName, projectParser) -> {
+            projectParser.saveToExcel("outputs/microservice/" + projectName + ".xlsx");
+        });
     }
 
     private static void doOnEachProject(DoOnEachProjectCallback callback) throws IOException {
-        var root = "C:\\ood\\Open Source OO project";
+        var root = "C:\\ood\\Microservice Open Source Project";
         var file = new File(root);
         for(var f : file.listFiles()) {
             var name = f.getName();
             var path = f.getAbsolutePath();
-            callback.doOnProject(name, new JavaProjectParser(path));
+            System.out.println(name + " ...");
+            new JavaProjectParser(path).saveGraphAsImage("outputs/microservice/" + name + ".jpg");
+            System.gc();
+//            callback.doOnProject(name, new JavaProjectParser(path));
         }
     }
 

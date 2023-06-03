@@ -5,10 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OverriddenMethodsFinder {
@@ -76,6 +73,9 @@ public class OverriddenMethodsFinder {
             return;
 
         var parents = getDirectParents(current);
+
+        if(allParents.containsAll(parents))
+            return;
 
         allParents.addAll(parents);
 

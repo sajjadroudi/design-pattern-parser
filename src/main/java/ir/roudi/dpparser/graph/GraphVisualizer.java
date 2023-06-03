@@ -85,7 +85,7 @@ public class GraphVisualizer {
             );
             File file = new File(path);
             ImageIO.write(image, "jpg", file);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -31,9 +31,11 @@ public class ClassFinder {
                 .map(pair -> {
                     var className = extractClassName(pair.getFirst());
 
-                    var compilationUnit = pair.getSecond()
-                            .getResult()
-                            .get();
+                    var optional = pair.getSecond().getResult();
+                    if(!optional.isPresent())
+                        return null;
+
+                    var compilationUnit = optional.get();
 
                     var interfaceDeclaration = compilationUnit
                             .getInterfaceByName(className)
