@@ -188,7 +188,7 @@ public class ClassParser {
     }
 
     public List<String> findAssociatedClasses() {
-        List<String> associatedClasses = new ArrayList<>();
+        Set<String> associatedClasses = new HashSet<>();
         for (var field : clazz.getFields()) {
             if (field.getElementType().isClassOrInterfaceType()) {
                 var classOrInterfaceType = field.getElementType().asClassOrInterfaceType();
@@ -198,7 +198,7 @@ public class ClassParser {
                 }
             }
         }
-        return associatedClasses;
+        return new ArrayList<>(associatedClasses);
     }
 
     public Map<String, Set<String>> findDelegatedClasses() {

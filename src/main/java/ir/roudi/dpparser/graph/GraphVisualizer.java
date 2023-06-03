@@ -43,7 +43,7 @@ public class GraphVisualizer {
 
     private void insertVertices(Object parent, Collection<Node> nodes) {
         for(Node node : nodes) {
-            var width = node.getLabel().length() * 7;
+            var width = node.getLabel().length() * 6 + 14;
             Object nodeObj = graph.insertVertex(parent, null, node.getLabel(), 0, 0, width, 30);
             vertices.put(node, nodeObj);
         }

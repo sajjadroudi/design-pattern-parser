@@ -1,42 +1,29 @@
 package ir.roudi.dpparser;
 
-import ir.roudi.dpparser.core.ClassContainer;
-import ir.roudi.dpparser.core.ClassFinder;
 import ir.roudi.dpparser.core.JavaProjectParser;
-import ir.roudi.dpparser.graph.GraphHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class Main {
+
+    private interface DoOnEachProjectCallback {
+        void doOnProject(String projectName, JavaProjectParser projectParser) throws IOException;
+    }
+
     public static void main(String[] args) throws IOException {
-        handleGraph();
+        doOnEachProject((projectName, projectParser) -> {
+            projectParser.saveGraphAsImage("outputs/" + projectName + ".jpg");
+        });
     }
 
-    private static void handleGraph() throws IOException {
-        var path = "C:\\Users\\roudi\\Desktop\\Open Source OO project-20230602\\1 - QuickUML 2001";
-        var finder = new ClassFinder();
-        var classes = finder.findAllClasses(path);
-        var classContainer = new ClassContainer(classes);
-        var graph = new GraphHandler(classContainer);
-        graph.displayGraph();
-//        graph.saveGraphAsImage("test.jpg");
-    }
-
-    private static void saveToExcelFile() throws IOException {
-        var projectParser = new JavaProjectParser();
-
-        var path = "C:\\Users\\roudi\\Desktop\\Open Source OO project-20230423";
-        var file = new File(path);
+    private static void doOnEachProject(DoOnEachProjectCallback callback) throws IOException {
+        var root = "C:\\ood\\Open Source OO project";
+        var file = new File(root);
         for(var f : file.listFiles()) {
             var name = f.getName();
-            var p = f.getAbsolutePath();
-            System.out.println(name + " | " + path);
-            projectParser.parse(
-                    p,
-                    name + ".xlsx"
-            );
+            var path = f.getAbsolutePath();
+            callback.doOnProject(name, new JavaProjectParser(path));
         }
     }
 
