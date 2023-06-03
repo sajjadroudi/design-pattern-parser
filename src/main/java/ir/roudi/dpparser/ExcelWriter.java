@@ -116,7 +116,7 @@ public class ExcelWriter {
                 getDelegationClasses(parser),
                 parser.findAssociatedClasses(),
                 parser.extractInstantiatedClasses(),
-                "API",
+                parser.extractApis(),
                 "pattern",
                 "role",
                 "description"

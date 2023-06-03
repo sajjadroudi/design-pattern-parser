@@ -223,4 +223,13 @@ public class ClassParser {
         return result;
     }
 
+    public List<ApiData> extractApis() {
+        var cuOptional = clazz.findCompilationUnit();
+        if(!cuOptional.isPresent())
+            return List.of();
+        var set = new HashSet<ApiData>();
+        new ApiVisitor().visit(cuOptional.get(), set);
+        return new ArrayList<>(set);
+    }
+
 }
