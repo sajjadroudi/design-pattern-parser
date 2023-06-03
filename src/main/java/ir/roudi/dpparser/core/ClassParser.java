@@ -227,9 +227,9 @@ public class ClassParser {
         var cuOptional = clazz.findCompilationUnit();
         if(!cuOptional.isPresent())
             return List.of();
-        var set = new HashSet<ApiData>();
-        new ApiVisitor().visit(cuOptional.get(), set);
-        return new ArrayList<>(set);
+        var list = new ArrayList<ApiData>();
+        new ApiVisitor().visit(cuOptional.get(), list);
+        return list;
     }
 
 }
